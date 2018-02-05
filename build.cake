@@ -2,9 +2,9 @@ var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
 var assemblyVersion = "1.0.0";
+var buildVersion = assemblyVersion;
 
 var artifactsDir = MakeAbsolute(Directory("artifacts"));
-var testsResultsDir = artifactsDir.Combine(Directory("tests-results"));
 var publishDir = artifactsDir.Combine(Directory("publish"));
 
 var solutionPath = "./AspNetCoreAppInsights.sln";
@@ -29,19 +29,23 @@ Task("Restore")
         DotNetCoreRestore();
     });
 
-Task("SemVer")
+Task("Version")
     .IsDependentOn("Restore")
     .Does(() =>
     {
-        var gitVersion = GitVersion();
+        var buildNumber = EnvironmentVariable("BUILD_BUILDNUMBER");
 
-        assemblyVersion = gitVersion.AssemblySemVer;
+        if (buildNumber != null)
+        {
+            buildVersion = $"1.0.{buildNumber}";
+        }
 
-        Information($"AssemblySemVer: {assemblyVersion}");
+        Information($"Assembly Version: {assemblyVersion}");
+        Information($"Build Version: {buildVersion}");
     });
 
 Task("Build")
-    .IsDependentOn("SemVer")
+    .IsDependentOn("Version")
     .Does(() =>
     {
         var settings = new DotNetCoreBuildSettings
@@ -51,8 +55,8 @@ Task("Build")
             NoRestore = true,
             MSBuildSettings = new DotNetCoreMSBuildSettings()
                 .SetVersion(assemblyVersion)
-                .WithProperty("FileVersion", assemblyVersion)
-                .WithProperty("InformationalVersion", assemblyVersion)
+                .WithProperty("FileVersion", buildVersion)
+                .WithProperty("InformationalVersion", buildVersion)
                 .WithProperty("nowarn", "7035")
         };
 
