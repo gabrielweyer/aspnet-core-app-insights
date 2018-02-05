@@ -7,19 +7,34 @@
             "type": "string"
         },
         "hostingEnvironment": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": ""
         },
         "location": {
-            "type": "string"
+            "type": "string",
+            "allowedValues": [
+              "East US",
+              "North Europe",
+              "South Central US",
+              "Southeast Asia",
+              "West Europe",
+              "West US 2"
+            ],
+            "metadata": {
+              "description": "Application Insights has to be supported in this location."
+            }
         },
         "sku": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "Standard"
         },
         "skuCode": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "S1"
         },
         "workerSize": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "0"
         },
         "serverFarmResourceGroup": {
             "type": "string"
