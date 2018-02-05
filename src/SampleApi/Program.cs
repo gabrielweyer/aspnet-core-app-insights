@@ -51,6 +51,7 @@ namespace SampleApi
 
                 return webHostBuilder
                     .UseStartup<Startup>()
+                    .ConfigureAppConfiguration((hostingContext, config) => { config.Sources.Clear(); })
                     .UseConfiguration(configuration)
                     .UseSerilog(logger, true)
                     .Build();
@@ -65,7 +66,8 @@ namespace SampleApi
 
     internal static class ConfigurationRootExtensions
     {
-        internal static LogEventLevel GetLoggingLevel(this IConfigurationRoot configuration, string keyName, LogEventLevel defaultLevel = LogEventLevel.Warning)
+        internal static LogEventLevel GetLoggingLevel(this IConfigurationRoot configuration, string keyName,
+            LogEventLevel defaultLevel = LogEventLevel.Warning)
         {
             try
             {

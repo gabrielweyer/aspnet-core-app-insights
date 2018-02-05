@@ -57,14 +57,6 @@
                         {
                             "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
                             "value": "[reference(resourceId('microsoft.insights/components/', parameters('siteName')), '2015-05-01').InstrumentationKey]"
-                        },
-                        {
-                          "name": "ASPNETCORE_ENVIRONMENT",
-                          "value": "Release"
-                        },
-                        {
-                          "name": "ASPNETCORE_URLS",
-                          "value": "http://*:80"
                         }
                     ],
                     "phpVersion": "Off",
