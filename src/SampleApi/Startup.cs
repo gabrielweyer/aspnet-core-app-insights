@@ -1,23 +1,72 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using SampleApi.ApplicationBuilderExtensions;
+using SampleApi.Options;
+using SampleApi.Services;
 
 namespace SampleApi
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        private readonly IConfiguration _configuration;
+
+        public Startup(IConfiguration configuration)
         {
-            services.AddMvcCore()
-                .AddJsonFormatters();
+            _configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            AddServices(services);
+
+            var tokenOptions = _configuration.GetSection("Token").Get<TokenOptions>();
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(o =>
+                {
+                    o.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = tokenOptions.Issuer,
+                        ValidAudience = tokenOptions.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.SecretKey))
+                    };
+                });
+
+            var policy = new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .Build();
+
+            ConfigureOptions(services);
+
+            services.AddMvcCore(config => { config.Filters.Add(new AuthorizeFilter(policy)); })
+                .AddJsonFormatters()
+                .AddAuthorization();
+        }
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseAuthentication();
+            app.UseUserEnricher();
             app.UseMvc();
+        }
+
+        private void ConfigureOptions(IServiceCollection services)
+        {
+            services.Configure<TokenOptions>(_configuration.GetSection("Token"));
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddScoped<ITokenService, TokenService>();
         }
     }
 }

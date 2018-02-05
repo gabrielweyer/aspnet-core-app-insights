@@ -33,6 +33,7 @@ namespace SampleApi
 
             var loggerConfiguration = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
+                .Enrich.FromLogContext()
                 .Enrich.WithDemystifiedStackTraces();
 
             if (isDevelopment)
