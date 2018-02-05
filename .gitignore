@@ -6,3 +6,9 @@
 
 bin/
 obj/
+
+# Cake
+
+tools/*
+!tools/packages.config
+artifacts/
