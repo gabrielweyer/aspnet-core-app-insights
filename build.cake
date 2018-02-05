@@ -73,7 +73,14 @@ Task("Publish")
             Configuration = configuration,
             NoDependencies = true,
             NoRestore = true,
-            OutputDirectory = publishDir
+            OutputDirectory = publishDir,
+            // Workaround for https://github.com/dotnet/cli/issues/5331
+            // We need to rebuild to be able to version the assemblies :()
+            MSBuildSettings = new DotNetCoreMSBuildSettings()
+                .SetVersion(assemblyVersion)
+                .WithProperty("FileVersion", buildVersion)
+                .WithProperty("InformationalVersion", buildVersion)
+                .WithProperty("nowarn", "7035")
         };
 
         GetFiles("./src/*/*.csproj")
