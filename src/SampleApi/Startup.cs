@@ -26,7 +26,7 @@ namespace SampleApi
         {
             AddServices(services);
 
-            var tokenOptions = _configuration.GetSection("Token").Get<TokenOptions>();
+            var tokenOptions = _configuration.GetSection("Jwt").Get<JwtOptions>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(o =>
@@ -62,7 +62,7 @@ namespace SampleApi
 
         private void ConfigureOptions(IServiceCollection services)
         {
-            services.Configure<TokenOptions>(_configuration.GetSection("Token"));
+            services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
         }
 
         private static void AddServices(IServiceCollection services)

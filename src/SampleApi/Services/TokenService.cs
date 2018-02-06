@@ -11,16 +11,16 @@ namespace SampleApi.Services
 {
     internal class TokenService : ITokenService
     {
-        private readonly TokenOptions _tokenOptions;
+        private readonly JwtOptions _jwtOptions;
         private readonly JwtSecurityTokenHandler _tokenHandler;
         private readonly SigningCredentials _signingCredentials;
 
-        public TokenService(IOptions<TokenOptions> tokenOptions)
+        public TokenService(IOptions<JwtOptions> tokenOptions)
         {
-            _tokenOptions = tokenOptions.Value;
+            _jwtOptions = tokenOptions.Value;
             _tokenHandler = new JwtSecurityTokenHandler();
 
-            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_tokenOptions.SecretKey));
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_jwtOptions.SecretKey));
             _signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
         }
 
@@ -36,12 +36,12 @@ namespace SampleApi.Services
             var expires = now.AddYears(10);
 
             var accessToken = new JwtSecurityToken(
-                _tokenOptions.Issuer,
+                _jwtOptions.Issuer,
                 claims: userClaims,
                 notBefore: now,
                 expires: expires,
                 signingCredentials: _signingCredentials,
-                audience: _tokenOptions.Audience);
+                audience: _jwtOptions.Audience);
 
             return _tokenHandler.WriteToken(accessToken);
         }
