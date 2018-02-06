@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SampleApi.Services;
@@ -21,6 +22,8 @@ namespace SampleApi
         public void Verbose()
         {
             _logger.LogTrace("It's me logging a VERBOSE event");
+
+            Trace.TraceWarning("Trace warning");
         }
 
         [AllowAnonymous]

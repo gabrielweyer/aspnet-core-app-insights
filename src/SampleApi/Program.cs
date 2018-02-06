@@ -49,7 +49,8 @@ namespace SampleApi
                 loggerConfiguration = loggerConfiguration
                     .WriteTo.ApplicationInsightsTraces(appInsightsIntrumentationKey, serilogLevel);
 
-                webHostBuilder = webHostBuilder.UseApplicationInsights(appInsightsIntrumentationKey);
+                webHostBuilder = webHostBuilder
+                    .UseApplicationInsights(appInsightsIntrumentationKey);
             }
             else
             {
@@ -59,7 +60,7 @@ namespace SampleApi
             if (isDevelopment)
             {
                 loggerConfiguration = loggerConfiguration
-                    .WriteTo.Seq("http://localhost:5341/")
+                    .WriteTo.Seq("http://localhost:5341/", serilogLevel)
                     .WriteTo.Console(serilogLevel);
             }
 
