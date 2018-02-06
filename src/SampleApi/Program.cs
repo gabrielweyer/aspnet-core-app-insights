@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.AspNetCore;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -16,10 +16,14 @@ namespace SampleApi
 
         private static IWebHost BuildWebHost(string[] args)
         {
-            var webHostBuilder = WebHost.CreateDefaultBuilder(args);
+            var webHostBuilder = new WebHostBuilder()
+                .UseKestrel()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseIISIntegration()
+                .UseAzureAppServices();
 
-            var contentRoot = webHostBuilder.GetSetting("contentRoot");
-            var environment = webHostBuilder.GetSetting("ENVIRONMENT");
+            var contentRoot = webHostBuilder.GetSetting(WebHostDefaults.ContentRootKey);
+            var environment = webHostBuilder.GetSetting(WebHostDefaults.EnvironmentKey);
 
             var isDevelopment = EnvironmentName.Development.Equals(environment);
 
@@ -51,7 +55,6 @@ namespace SampleApi
 
                 return webHostBuilder
                     .UseStartup<Startup>()
-                    .ConfigureAppConfiguration((hostingContext, config) => { config.Sources.Clear(); })
                     .UseConfiguration(configuration)
                     .UseSerilog(logger, true)
                     .Build();
