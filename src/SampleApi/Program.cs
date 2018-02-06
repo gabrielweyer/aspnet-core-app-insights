@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
@@ -39,6 +40,20 @@ namespace SampleApi
                 .ReadFrom.Configuration(configuration)
                 .Enrich.FromLogContext()
                 .Enrich.WithDemystifiedStackTraces();
+
+            var appInsightsIntrumentationKey = configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
+
+            if (!string.IsNullOrEmpty(appInsightsIntrumentationKey))
+            {
+                loggerConfiguration = loggerConfiguration
+                    .WriteTo.ApplicationInsightsTraces(appInsightsIntrumentationKey, serilogLevel);
+
+                TelemetryConfiguration.Active.InstrumentationKey = appInsightsIntrumentationKey;
+            }
+            else
+            {
+                TelemetryConfiguration.Active.DisableTelemetry = true;
+            }
 
             if (isDevelopment)
             {
