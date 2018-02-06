@@ -12,3 +12,8 @@ obj/
 tools/*
 !tools/packages.config
 artifacts/
+
+# Visual Studio
+
+.vs/
+*.csproj.user
