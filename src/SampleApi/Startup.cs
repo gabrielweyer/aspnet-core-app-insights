@@ -54,6 +54,7 @@ namespace SampleApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseDeveloperExceptionPage();
             app.UseAuthentication();
             app.UseUserEnricher();
             app.UseMvc();
