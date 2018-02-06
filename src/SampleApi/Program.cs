@@ -39,8 +39,7 @@ namespace SampleApi
             var loggerConfiguration = new LoggerConfiguration()
                 .ReadFrom.Configuration(configuration)
                 .Enrich.FromLogContext()
-                .Enrich.WithDemystifiedStackTraces()
-                .WriteTo.Trace(serilogLevel);
+                .Enrich.WithDemystifiedStackTraces();
 
             var appInsightsIntrumentationKey = configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
 
