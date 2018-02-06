@@ -48,7 +48,7 @@ namespace SampleApi
                 loggerConfiguration = loggerConfiguration
                     .WriteTo.ApplicationInsightsTraces(appInsightsIntrumentationKey, serilogLevel);
 
-                TelemetryConfiguration.Active.InstrumentationKey = appInsightsIntrumentationKey;
+                webHostBuilder = webHostBuilder.UseApplicationInsights(appInsightsIntrumentationKey);
             }
             else
             {
