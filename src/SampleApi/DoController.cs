@@ -22,8 +22,6 @@ namespace SampleApi
         public void Verbose()
         {
             _logger.LogTrace("It's me logging a VERBOSE event");
-
-            Trace.TraceWarning("Trace warning");
         }
 
         [AllowAnonymous]
