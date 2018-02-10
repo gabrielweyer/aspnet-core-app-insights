@@ -1,8 +1,8 @@
 ﻿using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
-using SampleApi.Models;
+using SimpleInstrumentation.Models;
 
-namespace SampleApi.Telemetry
+namespace SimpleAppInsights.Telemetry
 {
     public class ApplicationInitializer : ITelemetryInitializer
     {

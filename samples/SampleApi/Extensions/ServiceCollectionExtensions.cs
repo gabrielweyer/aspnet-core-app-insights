@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using SampleApi.Models;
 using SampleApi.Options;
 using SampleApi.Services;
-using SampleApi.Telemetry;
+using SimpleAppInsights.Telemetry;
+using SimpleInstrumentation.Models;
 
 namespace SampleApi.Extensions
 {
@@ -40,7 +40,7 @@ namespace SampleApi.Extensions
 
         public static void AddTelemetry(this IServiceCollection services, string applicationName)
         {
-            services.AddSingleton(new Application(applicationName));
+            services.AddSingleton(new Application(applicationName, Application.GetAssemblyInformationalversion(typeof(Startup))));
             services.AddSingleton<ITelemetryInitializer, AuthenticatedUserInitializer>();
             services.AddSingleton<ITelemetryInitializer, ApplicationInitializer>();
         }

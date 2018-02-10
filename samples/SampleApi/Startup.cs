@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SampleApi.Extensions;
 using SampleApi.Options;
+using SimpleInstrumentation.Extensions;
 
 namespace SampleApi
 {
@@ -38,6 +39,7 @@ namespace SampleApi
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCorrelation();
             app.UseAuthentication();
             app.UseUserEnricher();
             app.UseMvc();

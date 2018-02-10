@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Serilog.Context;
-using Serilog.Core.Enrichers;
 
-namespace SampleApi.Middlewares
+namespace SimpleInstrumentation.Middlewares
 {
     public class UserEnricherMiddleware
     {
@@ -24,9 +23,7 @@ namespace SampleApi.Middlewares
                 userId = context.User.FindFirstValue(ClaimTypes.Name);
             }
 
-            var userIdEnricher = new PropertyEnricher("UserId", userId);
-
-            using (LogContext.Push(userIdEnricher))
+            using (LogContext.PushProperty("UserId", userId))
             {
                 await _next(context);
             }

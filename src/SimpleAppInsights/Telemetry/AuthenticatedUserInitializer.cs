@@ -2,7 +2,7 @@
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Http;
 
-namespace SampleApi.Telemetry
+namespace SimpleAppInsights.Telemetry
 {
     public class AuthenticatedUserInitializer : ITelemetryInitializer
     {
