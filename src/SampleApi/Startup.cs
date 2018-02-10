@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using SampleApi.ApplicationBuilderExtensions;
 using SampleApi.Options;
 using SampleApi.Services;
+using SampleApi.Telemetry;
 
 namespace SampleApi
 {
@@ -24,6 +26,8 @@ namespace SampleApi
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<ITelemetryInitializer, AuthenticatedUserInitializer>();
+
             AddServices(services);
 
             var tokenOptions = _configuration.GetSection("Jwt").Get<JwtOptions>();
