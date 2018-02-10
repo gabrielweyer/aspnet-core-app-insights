@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using SampleApi.Middlewares;
 
-namespace SampleApi.ApplicationBuilderExtensions
+namespace SampleApi.Extensions
 {
     public static class ApplicationBuilderExtensions
     {

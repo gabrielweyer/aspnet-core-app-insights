@@ -1,17 +1,12 @@
-﻿using System.Text;
-using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using SampleApi.ApplicationBuilderExtensions;
+using SampleApi.Extensions;
 using SampleApi.Options;
-using SampleApi.Services;
-using SampleApi.Telemetry;
 
 namespace SampleApi
 {
@@ -26,30 +21,15 @@ namespace SampleApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ITelemetryInitializer, AuthenticatedUserInitializer>();
+            services.AddTelemetry("Web");
 
-            AddServices(services);
+            var jwtOptions = _configuration.GetSection("Jwt").Get<JwtOptions>();
+            services.AddAuthentication(jwtOptions);
 
-            var tokenOptions = _configuration.GetSection("Jwt").Get<JwtOptions>();
+            services.AddServices();
+            services.ConfigureOptions(_configuration);
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(o =>
-                {
-                    o.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuerSigningKey = true,
-                        ValidIssuer = tokenOptions.Issuer,
-                        ValidAudience = tokenOptions.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenOptions.SecretKey))
-                    };
-                });
-
-            var policy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
-                .Build();
-
-            ConfigureOptions(services);
+            var policy = GetJwtAuthenticatedPolicy();
 
             services.AddMvcCore(config => { config.Filters.Add(new AuthorizeFilter(policy)); })
                 .AddJsonFormatters()
@@ -63,14 +43,12 @@ namespace SampleApi
             app.UseMvc();
         }
 
-        private void ConfigureOptions(IServiceCollection services)
+        private static AuthorizationPolicy GetJwtAuthenticatedPolicy()
         {
-            services.Configure<JwtOptions>(_configuration.GetSection("Jwt"));
-        }
-
-        private static void AddServices(IServiceCollection services)
-        {
-            services.AddScoped<ITokenService, TokenService>();
+            return new AuthorizationPolicyBuilder()
+                .RequireAuthenticatedUser()
+                .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+                .Build();
         }
     }
 }
