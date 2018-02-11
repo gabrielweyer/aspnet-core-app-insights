@@ -15,6 +15,17 @@ namespace SimpleInstrumentation.Middlewares
             _next = next;
         }
 
+        /// <summary>
+        /// Based on:
+        ///
+        /// - https://github.com/dotnet/corefx/blob/master/src/System.Diagnostics.DiagnosticSource/src/HttpCorrelationProtocol.md
+        /// - https://github.com/dotnet/corefx/blob/master/src/System.Diagnostics.DiagnosticSource/src/FlatRequestId.md
+        /// - https://github.com/dotnet/corefx/blob/master/src/System.Diagnostics.DiagnosticSource/src/HierarchicalRequestId.md
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="correlator"></param>
+        /// <param name="logger"></param>
+        /// <returns></returns>
         public async Task Invoke(HttpContext context, ICorrelator correlator, ILogger<CorrelationMiddleware> logger)
         {
             if (context.Request.Headers.TryGetValue(correlator.HeaderName, out var correlationId))
@@ -25,6 +36,13 @@ namespace SimpleInstrumentation.Middlewares
             }
             else
             {
+                var firstDotIndex = context.TraceIdentifier.IndexOf('.');
+
+                if (firstDotIndex > -1 && context.TraceIdentifier[0] == '|')
+                {
+                    context.TraceIdentifier = context.TraceIdentifier.Substring(1, firstDotIndex - 1);
+                }
+
                 correlationId = context.TraceIdentifier;
             }
 
