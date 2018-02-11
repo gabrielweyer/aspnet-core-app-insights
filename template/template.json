@@ -1,109 +1,120 @@
 {
-    "parameters": {
-        "siteName": {
-            "type": "string"
-        },
-        "hostingPlanName": {
-            "type": "string"
-        },
-        "hostingEnvironment": {
-            "type": "string",
-            "defaultValue": ""
-        },
-        "location": {
-            "type": "string",
-            "allowedValues": [
-              "East US",
-              "North Europe",
-              "South Central US",
-              "Southeast Asia",
-              "West Europe",
-              "West US 2"
-            ],
-            "metadata": {
-              "description": "Application Insights has to be supported in this location."
-            }
-        },
-        "sku": {
-            "type": "string",
-            "defaultValue": "Standard"
-        },
-        "skuCode": {
-            "type": "string",
-            "defaultValue": "S1"
-        },
-        "workerSize": {
-            "type": "string",
-            "defaultValue": "0"
-        },
-        "serverFarmResourceGroup": {
-            "type": "string"
-        },
-        "subscriptionId": {
-            "type": "string"
-        }
+  "parameters": {
+    "siteName": {
+      "type": "string"
     },
-    "resources": [
-        {
-            "name": "[parameters('siteName')]",
-            "type": "Microsoft.Web/sites",
-            "dependsOn": [
-                "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-                "[resourceId('microsoft.insights/components/', parameters('siteName'))]"
-            ],
-            "properties": {
-                "siteConfig": {
-                    "appSettings": [
-                        {
-                            "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                            "value": "[reference(resourceId('microsoft.insights/components/', parameters('siteName')), '2015-05-01').InstrumentationKey]"
-                        }
-                    ],
-                    "phpVersion": "Off",
-                    "use32BitWorkerProcess": false
-                },
-                "name": "[parameters('siteName')]",
-                "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-                "hostingEnvironment": "[parameters('hostingEnvironment')]",
-                "clientAffinityEnabled": false
-            },
-            "apiVersion": "2016-03-01",
-            "location": "[parameters('location')]",
-            "tags": {
-                "[concat('hidden-related:', '/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
+    "hostingPlanName": {
+      "type": "string"
+    },
+    "hostingEnvironment": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "location": {
+      "type": "string",
+      "allowedValues": [
+        "East US",
+        "North Europe",
+        "South Central US",
+        "Southeast Asia",
+        "West Europe",
+        "West US 2"
+      ],
+      "metadata": {
+        "description": "Application Insights has to be supported in this location."
+      }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Standard"
+    },
+    "skuCode": {
+      "type": "string",
+      "defaultValue": "S1"
+    },
+    "workerSize": {
+      "type": "string",
+      "defaultValue": "0"
+    },
+    "serverFarmResourceGroup": {
+      "type": "string"
+    },
+    "subscriptionId": {
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "name": "[parameters('siteName')]",
+      "type": "Microsoft.Web/sites",
+      "dependsOn": [
+        "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "[resourceId('microsoft.insights/components/', parameters('siteName'))]"
+      ],
+      "properties": {
+        "siteConfig": {
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(resourceId('microsoft.insights/components/', parameters('siteName')), '2015-05-01').InstrumentationKey]"
             }
+          ],
+          "phpVersion": "Off",
+          "use32BitWorkerProcess": false
         },
+        "name": "[parameters('siteName')]",
+        "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "hostingEnvironment": "[parameters('hostingEnvironment')]",
+        "clientAffinityEnabled": false
+      },
+      "resources": [
         {
-            "apiVersion": "2016-09-01",
-            "name": "[parameters('hostingPlanName')]",
-            "type": "Microsoft.Web/serverfarms",
-            "location": "[parameters('location')]",
-            "properties": {
-                "name": "[parameters('hostingPlanName')]",
-                "workerSizeId": "[parameters('workerSize')]",
-                "reserved": false,
-                "numberOfWorkers": "1",
-                "hostingEnvironment": "[parameters('hostingEnvironment')]"
-            },
-            "sku": {
-                "Tier": "[parameters('sku')]",
-                "Name": "[parameters('skuCode')]"
-            }
-        },
-        {
-            "apiVersion": "2015-05-01",
-            "name": "[parameters('siteName')]",
-            "type": "microsoft.insights/components",
-            "location": "[parameters('location')]",
-            "tags": {
-                "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('siteName'))]": "Resource"
-            },
-            "properties": {
-                "ApplicationId": "[parameters('siteName')]",
-                "Request_Source": "IbizaWebAppExtensionCreate"
-            }
+          "apiVersion": "2015-08-01",
+          "name": "Staging",
+          "type": "slots",
+          "location": "[parameters('location')]",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/Sites', [parameters('siteName')])]"
+          ]
         }
-    ],
-    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0"
+      ],
+      "apiVersion": "2016-03-01",
+      "location": "[parameters('location')]",
+      "tags": {
+        "[concat('hidden-related:', '/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
+      }
+    },
+    {
+      "apiVersion": "2016-09-01",
+      "name": "[parameters('hostingPlanName')]",
+      "type": "Microsoft.Web/serverfarms",
+      "location": "[parameters('location')]",
+      "properties": {
+        "name": "[parameters('hostingPlanName')]",
+        "workerSizeId": "[parameters('workerSize')]",
+        "reserved": false,
+        "numberOfWorkers": "1",
+        "hostingEnvironment": "[parameters('hostingEnvironment')]"
+      },
+      "sku": {
+        "Tier": "[parameters('sku')]",
+        "Name": "[parameters('skuCode')]"
+      }
+    },
+    {
+      "apiVersion": "2015-05-01",
+      "name": "[parameters('siteName')]",
+      "type": "microsoft.insights/components",
+      "location": "[parameters('location')]",
+      "tags": {
+        "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('siteName'))]": "Resource"
+      },
+      "properties": {
+        "ApplicationId": "[parameters('siteName')]",
+        "Request_Source": "IbizaWebAppExtensionCreate"
+      }
+    }
+  ],
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0"
 }
