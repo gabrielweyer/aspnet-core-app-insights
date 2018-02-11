@@ -75,7 +75,8 @@
           "location": "[parameters('location')]",
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
-          ]
+          ],
+          "properties": {}
         }
       ],
       "apiVersion": "2016-03-01",
