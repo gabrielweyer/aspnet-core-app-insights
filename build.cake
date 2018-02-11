@@ -1,7 +1,7 @@
 var target = Argument("target", "Default");
 var configuration = Argument("configuration", "Release");
 
-var assemblyVersion = "1.0.0";
+var assemblyVersion = "1.0.0.0";
 var buildVersion = assemblyVersion;
 
 var artifactsDir = MakeAbsolute(Directory("artifacts"));
