@@ -44,5 +44,10 @@ namespace SampleApi.Extensions
             services.AddSingleton<ITelemetryInitializer, AuthenticatedUserInitializer>();
             services.AddSingleton<ITelemetryInitializer, ApplicationInitializer>();
         }
+
+        public static void AddInstrumentation(this IServiceCollection services)
+        {
+            services.AddSingleton<ICorrelator, Correlator>();
+        }
     }
 }

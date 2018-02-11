@@ -23,6 +23,7 @@ namespace SampleApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTelemetry("Web");
+            services.AddInstrumentation();
 
             var jwtOptions = _configuration.GetSection("Jwt").Get<JwtOptions>();
             services.AddAuthentication(jwtOptions);
