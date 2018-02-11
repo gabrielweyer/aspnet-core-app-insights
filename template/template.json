@@ -74,7 +74,7 @@
           "type": "slots",
           "location": "[parameters('location')]",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', [parameters('siteName')])]"
+            "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
           ]
         }
       ],
