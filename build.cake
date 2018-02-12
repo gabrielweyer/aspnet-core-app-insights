@@ -37,7 +37,7 @@ Task("Version")
 
         if (buildNumber != null)
         {
-            buildVersion = $"1.0.{buildNumber}";
+            buildVersion = buildNumber;
         }
 
         Information($"Assembly Version: {assemblyVersion}");
