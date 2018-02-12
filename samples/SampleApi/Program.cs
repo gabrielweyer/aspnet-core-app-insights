@@ -3,6 +3,7 @@ using System.IO;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using SampleApi.Extensions;
 using Serilog;
 using Serilog.Events;
 
@@ -49,7 +50,7 @@ namespace SampleApi
                     .WriteTo.ApplicationInsightsTraces(appInsightsIntrumentationKey, serilogLevel);
 
                 webHostBuilder = webHostBuilder
-                    .UseApplicationInsights(appInsightsIntrumentationKey);
+                    .UseDeveloperApplicationInsights(appInsightsIntrumentationKey);
             }
             else
             {
