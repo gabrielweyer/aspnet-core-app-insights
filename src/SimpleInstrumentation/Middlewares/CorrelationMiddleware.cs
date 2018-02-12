@@ -21,6 +21,11 @@ namespace SimpleInstrumentation.Middlewares
         {
             var correlationId = Guid.NewGuid().ToString();
 
+            if (context.Request.Headers.TryGetValue("X-Forwarded-For", out var forwardedFor))
+            {
+                logger.LogDebug("Request forwarded for {ForwardedFor}", forwardedFor.ToString());
+            }
+
             if (context.Request.Headers.TryGetValue(correlator.HeaderName, out var correlationIdHeader))
             {
                 logger.LogDebug("Read CorrelationId from header");
