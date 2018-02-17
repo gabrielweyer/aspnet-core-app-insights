@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +12,6 @@ namespace SampleApi
     {
         private readonly ITokenService _tokenService;
         private readonly ILogger<DoController> _logger;
-
-        private static readonly List<int> MemoryHog = new List<int>();
 
         public DoController(ITokenService tokenService, ILogger<DoController> logger)
         {
@@ -51,12 +47,6 @@ namespace SampleApi
         public async Task Throw()
         {
             await UselessAsync();
-        }
-
-        [HttpGet("allocate")]
-        public void Allocate()
-        {
-            MemoryHog.AddRange(Enumerable.Range(0, 1_000_000));
         }
 
         [AllowAnonymous]
