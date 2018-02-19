@@ -20,9 +20,6 @@
         "workerSize": {
             "value": ""
         },
-        "serverFarmResourceGroup": {
-            "value": ""
-        },
         "skuCode": {
             "value": ""
         },

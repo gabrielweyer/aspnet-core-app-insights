@@ -36,9 +36,6 @@
       "type": "string",
       "defaultValue": "0"
     },
-    "serverFarmResourceGroup": {
-      "type": "string"
-    },
     "subscriptionId": {
       "type": "string"
     }
@@ -58,7 +55,7 @@
       "dependsOn": [
         "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
         "[resourceId('microsoft.insights/components/', parameters('siteName'))]",
-        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('siteName'))]"
+        "[concat('Microsoft.ServiceBus/namespaces/', parameters('siteName'))]"
       ],
       "properties": {
         "siteConfig": {
@@ -69,18 +66,18 @@
             },
             {
               "name": "ServiceBus:ConnectionString",
-              "value": "[listkeys(concat(parameters('siteName'), '/', variables('SenderRuleName')), variables('serviceBusApiVersion')).primaryConnectionString]"
+              "value": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('siteName'), variables('syncEventThreeTopicName'), variables('SenderRuleName')), variables('serviceBusApiVersion')).primaryConnectionString]"
             },
             {
               "name": "ServiceBus:Topic",
-              "value": "[variables('syncEventThreeTopicName')"
+              "value": "[variables('syncEventThreeTopicName')]"
             }
           ],
           "phpVersion": "Off",
           "use32BitWorkerProcess": false
         },
         "name": "[parameters('siteName')]",
-        "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
         "hostingEnvironment": "[parameters('hostingEnvironment')]",
         "clientAffinityEnabled": false
       },
@@ -99,7 +96,7 @@
       "apiVersion": "2016-03-01",
       "location": "[parameters('location')]",
       "tags": {
-        "[concat('hidden-related:', '/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('serverFarmResourceGroup'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
+        "[concat('hidden-related:', '/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
       }
     },
     {
@@ -139,7 +136,7 @@
           "tier": "Standard"
       },
       "name": "[parameters('siteName')]",
-      "apiVersion": "2017-04-01",
+      "apiVersion": "[variables('serviceBusApiVersion')]",
       "location": "[parameters('location')]",
       "tags": {},
       "scale": null,
