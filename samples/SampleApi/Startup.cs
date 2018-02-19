@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SampleApi.Extensions;
-using SampleApi.Options;
 using SimpleInstrumentation.Extensions;
 
 namespace SampleApi
@@ -22,18 +21,14 @@ namespace SampleApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddTelemetry("Web");
-            services.AddInstrumentation();
-
-            var jwtOptions = _configuration.GetSection("Jwt").Get<JwtOptions>();
-            services.AddAuthentication(jwtOptions);
-
-            services.AddServices();
-            services.ConfigureOptions(_configuration);
-
-            var policy = GetJwtAuthenticatedPolicy();
-
-            services.AddMvcCore(config => { config.Filters.Add(new AuthorizeFilter(policy)); })
+            services
+                .AddTelemetry("Web")
+                .AddInstrumentation()
+                .AddAuthentication(_configuration)
+                .AddLogic()
+                .AddServicebus(_configuration)
+                .ConfigureOptions(_configuration)
+                .AddMvcCore(config => { config.Filters.Add(new AuthorizeFilter(GetJwtAuthenticatedPolicy())); })
                 .AddJsonFormatters()
                 .AddAuthorization();
         }

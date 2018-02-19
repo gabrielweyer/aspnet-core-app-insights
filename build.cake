@@ -83,7 +83,7 @@ Task("Publish")
                 .WithProperty("nowarn", "7035")
         };
 
-        GetFiles("./samples/*/*.csproj")
+        GetFiles("./samples/*/*Api.csproj")
             .ToList()
             .ForEach(f => DotNetCorePublish(f.FullPath, settings));
     });

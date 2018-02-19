@@ -43,13 +43,22 @@
       "type": "string"
     }
   },
+  "variables": {
+    "senderRuleName": "Sender",
+    "listenerRuleName": "Listener",
+    "syncEventThreeTopicName": "sync-event-three",
+    "serviceBusNamespaceResourceName": "[concat('Microsoft.ServiceBus/namespaces/', parameters('siteName'))]",
+    "sampleWorkerSubscriptionName": "sample-worker",
+    "serviceBusApiVersion": "2017-04-01"
+  },
   "resources": [
     {
       "name": "[parameters('siteName')]",
       "type": "Microsoft.Web/sites",
       "dependsOn": [
         "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
-        "[resourceId('microsoft.insights/components/', parameters('siteName'))]"
+        "[resourceId('microsoft.insights/components/', parameters('siteName'))]",
+        "[resourceId('Microsoft.ServiceBus/namespaces', parameters('siteName'))]"
       ],
       "properties": {
         "siteConfig": {
@@ -57,6 +66,14 @@
             {
               "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
               "value": "[reference(resourceId('microsoft.insights/components/', parameters('siteName')), '2015-05-01').InstrumentationKey]"
+            },
+            {
+              "name": "ServiceBus:ConnectionString",
+              "value": "[listkeys(concat(parameters('siteName'), '/', variables('SenderRuleName')), variables('serviceBusApiVersion')).primaryConnectionString]"
+            },
+            {
+              "name": "ServiceBus:Topic",
+              "value": "[variables('syncEventThreeTopicName')"
             }
           ],
           "phpVersion": "Off",
@@ -114,6 +131,81 @@
         "ApplicationId": "[parameters('siteName')]",
         "Request_Source": "IbizaWebAppExtensionCreate"
       }
+    },
+    {
+      "type": "Microsoft.ServiceBus/namespaces",
+      "sku": {
+          "name": "Standard",
+          "tier": "Standard"
+      },
+      "name": "[parameters('siteName')]",
+      "apiVersion": "2017-04-01",
+      "location": "[parameters('location')]",
+      "tags": {},
+      "scale": null,
+      "properties": {},
+      "dependsOn": [],
+      "resources": [
+        {
+          "apiVersion": "[variables('serviceBusApiVersion')]",
+          "name": "[variables('listenerRuleName')]",
+          "type": "AuthorizationRules",
+          "dependsOn": [
+            "[variables('serviceBusNamespaceResourceName')]"
+          ],
+          "properties": {
+            "rights": ["Listen"]
+          }
+        },
+        {
+          "apiVersion": "[variables('serviceBusApiVersion')]",
+          "name": "[variables('syncEventThreeTopicName')]",
+          "type": "Topics",
+          "dependsOn": [
+            "[variables('serviceBusNamespaceResourceName')]"
+          ],
+          "properties": {
+            "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+            "maxSizeInMegabytes": "1024",
+            "requiresDuplicateDetection": "false",
+            "enableBatchedOperations": "false",
+            "supportOrdering": "false",
+            "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S",
+            "enablePartitioning": "false",
+            "enableExpress": "false"
+          },
+          "resources": [
+            {
+              "apiVersion": "[variables('serviceBusApiVersion')]",
+              "name": "[variables('sampleWorkerSubscriptionName')]",
+              "type": "Subscriptions",
+              "dependsOn": [
+                "[variables('syncEventThreeTopicName')]"
+              ],
+              "properties": {
+                "lockDuration": "PT1M",
+                "requiresSession": "false",
+                "defaultMessageTimeToLive": "P10675199DT2H48M5.4775807S",
+                "deadLetteringOnMessageExpiration": "false",
+                "maxDeliveryCount": "10",
+                "enableBatchedOperations": "false",
+                "autoDeleteOnIdle": "P10675199DT2H48M5.4775807S"
+              }
+            },
+            {
+              "apiVersion": "[variables('serviceBusApiVersion')]",
+              "name": "[variables('senderRuleName')]",
+              "type": "AuthorizationRules",
+              "dependsOn": [
+                "[variables('syncEventThreeTopicName')]"
+              ],
+              "properties": {
+                "rights": ["Send"]
+              }
+            }
+          ]
+        }
+      ]
     }
   ],
   "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",

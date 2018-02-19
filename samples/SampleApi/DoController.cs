@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SampleApi.Services;
+using SampleCore.Events;
 
 namespace SampleApi
 {
@@ -11,11 +12,13 @@ namespace SampleApi
     public class DoController : Controller
     {
         private readonly ITokenService _tokenService;
+        private readonly IAzureTopicClient _azureTopicClient;
         private readonly ILogger<DoController> _logger;
 
-        public DoController(ITokenService tokenService, ILogger<DoController> logger)
+        public DoController(ITokenService tokenService, IAzureTopicClient azureTopicClient, ILogger<DoController> logger)
         {
             _tokenService = tokenService;
+            _azureTopicClient = azureTopicClient;
             _logger = logger;
         }
 
@@ -47,6 +50,18 @@ namespace SampleApi
         public async Task Throw()
         {
             await UselessAsync();
+        }
+
+        [HttpGet("web-job-three")]
+        public async Task WebJobThree()
+        {
+            var eventThree = new EventThree
+            {
+                Duration = TimeSpan.FromHours(2),
+                TemperatureCelsius = 15
+            };
+
+            await _azureTopicClient.SendAsync(eventThree);
         }
 
         [AllowAnonymous]

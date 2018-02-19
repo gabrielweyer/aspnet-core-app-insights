@@ -29,9 +29,17 @@ namespace SampleApi
 
             var isDevelopment = EnvironmentName.Development.Equals(environment);
 
-            var configuration = new ConfigurationBuilder()
+            var configurationBuilder = new ConfigurationBuilder()
                 .SetBasePath(contentRoot)
-                .AddJsonFile("appsettings.json", false, false)
+                .AddJsonFile("appsettings.json", false, false);
+
+            if (isDevelopment)
+            {
+                configurationBuilder = configurationBuilder
+                    .AddUserSecrets<Startup>();
+            }
+
+            var configuration = configurationBuilder
                 .AddEnvironmentVariables()
                 .Build();
 
