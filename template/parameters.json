@@ -11,9 +11,6 @@
         "hostingEnvironment": {
             "value": ""
         },
-        "location": {
-            "value": ""
-        },
         "sku": {
             "value": ""
         },
@@ -21,9 +18,6 @@
             "value": ""
         },
         "skuCode": {
-            "value": ""
-        },
-        "subscriptionId": {
             "value": ""
         }
     }

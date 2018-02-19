@@ -10,20 +10,6 @@
       "type": "string",
       "defaultValue": ""
     },
-    "location": {
-      "type": "string",
-      "allowedValues": [
-        "East US",
-        "North Europe",
-        "South Central US",
-        "Southeast Asia",
-        "West Europe",
-        "West US 2"
-      ],
-      "metadata": {
-        "description": "Application Insights has to be supported in this location."
-      }
-    },
     "sku": {
       "type": "string",
       "defaultValue": "Standard"
@@ -35,9 +21,6 @@
     "workerSize": {
       "type": "string",
       "defaultValue": "0"
-    },
-    "subscriptionId": {
-      "type": "string"
     }
   },
   "variables": {
@@ -46,7 +29,8 @@
     "syncEventThreeTopicName": "sync-event-three",
     "serviceBusNamespaceResourceName": "[concat('Microsoft.ServiceBus/namespaces/', parameters('siteName'))]",
     "sampleWorkerSubscriptionName": "sample-worker",
-    "serviceBusApiVersion": "2017-04-01"
+    "serviceBusApiVersion": "2017-04-01",
+    "serviceBusEndpoint": "[concat('sb://', parameters('siteName'), '.servicebus.windows.net/')]"
   },
   "resources": [
     {
@@ -66,7 +50,7 @@
             },
             {
               "name": "ServiceBus:ConnectionString",
-              "value": "[listKeys(resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('siteName'), variables('syncEventThreeTopicName'), variables('SenderRuleName')), variables('serviceBusApiVersion')).primaryConnectionString]"
+              "value": "[concat('Endpoint=', variables('serviceBusEndpoint'), ';SharedAccessKeyName=', variables('senderRuleName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('siteName'), variables('syncEventThreeTopicName'), variables('SenderRuleName')), variables('serviceBusApiVersion')).primaryKey)]"
             },
             {
               "name": "ServiceBus:Topic",
@@ -77,7 +61,7 @@
           "use32BitWorkerProcess": false
         },
         "name": "[parameters('siteName')]",
-        "serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+        "serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId, '/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
         "hostingEnvironment": "[parameters('hostingEnvironment')]",
         "clientAffinityEnabled": false
       },
@@ -86,7 +70,7 @@
           "apiVersion": "2015-08-01",
           "name": "Staging",
           "type": "slots",
-          "location": "[parameters('location')]",
+          "location": "[resourceGroup().location]",
           "dependsOn": [
             "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
           ],
@@ -94,16 +78,16 @@
         }
       ],
       "apiVersion": "2016-03-01",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "tags": {
-        "[concat('hidden-related:', '/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
+        "[concat('hidden-related:', '/subscriptions/', subscription().subscriptionId, '/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "empty"
       }
     },
     {
       "apiVersion": "2016-09-01",
       "name": "[parameters('hostingPlanName')]",
       "type": "Microsoft.Web/serverfarms",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "properties": {
         "name": "[parameters('hostingPlanName')]",
         "workerSizeId": "[parameters('workerSize')]",
@@ -120,7 +104,7 @@
       "apiVersion": "2015-05-01",
       "name": "[parameters('siteName')]",
       "type": "microsoft.insights/components",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "tags": {
         "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('siteName'))]": "Resource"
       },
@@ -137,7 +121,7 @@
       },
       "name": "[parameters('siteName')]",
       "apiVersion": "[variables('serviceBusApiVersion')]",
-      "location": "[parameters('location')]",
+      "location": "[resourceGroup().location]",
       "tags": {},
       "scale": null,
       "properties": {},
