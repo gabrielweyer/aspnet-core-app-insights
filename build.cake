@@ -83,12 +83,13 @@ Task("Publish")
                 .WithProperty("nowarn", "7035")
         };
 
-        Func<IDirectory, bool> excludeCoreProject =
-            directory => !directory.Path.FullPath.EndsWith("SampleCore", StringComparison.OrdinalIgnoreCase);
-
-        GetFiles("./samples/*/*.csproj", new GlobberSettings { Predicate = excludeCoreProject })
+        GetFiles("./samples/SampleApi/*.csproj")
             .ToList()
-            .ForEach(f => DotNetCorePublish(f.FullPath, settings));
+            .ForEach(f =>
+            {
+                Information($"Publishing '{f.FullPath}' to '{settings.OutputDirectory}'");
+                DotNetCorePublish(f.FullPath, settings);
+            });
     });
 
 Task("Default")
