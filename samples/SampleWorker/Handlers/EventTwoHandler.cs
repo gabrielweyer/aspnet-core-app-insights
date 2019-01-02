@@ -15,7 +15,7 @@ namespace SampleWorker.Handlers
             _logger = logger;
         }
 
-        public async Task HandleEventTwoAsync([QueueTrigger("event-two")] EventTwo @event, CancellationToken token)
+        public async Task HandleEventTwoAsync([ServiceBusTrigger("event-two")] EventTwo @event, CancellationToken token)
         {
             _logger.LogDebug("Processing {@EventTwo}", @event);
 

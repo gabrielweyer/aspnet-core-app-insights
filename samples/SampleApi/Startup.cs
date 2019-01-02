@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,7 @@ namespace SampleApi
                 .AddServicebus(_configuration)
                 .ConfigureOptions(_configuration)
                 .AddMvcCore(config => { config.Filters.Add(new AuthorizeFilter(GetJwtAuthenticatedPolicy())); })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonFormatters()
                 .AddAuthorization();
         }

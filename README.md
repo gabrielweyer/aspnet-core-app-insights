@@ -2,15 +2,17 @@
 
 This demonstrates the capabilities of [Application Insights][application-insights] when used in an [Azure App Service][azure-app-service]. The application is composed of:
 
-- An `ASP.NET Core 2.0` API
-- A `Web Job`
+- An `ASP.NET Core 2.2` API
+- A `Web Job (.NET Core 2.2 console app)`
 - An `Azure Service Bus` namespace with a topic and a subscription to allow the API to delegate some tasks to the `Web Job`
 
 ## Configuration
 
-You'll need to configure the following settings:
+You'll need to configure the following secrets:
 
-- `Token:SecretKey` - used to signed the `JWT`
+- `Jwt:SecretKey` - used to sign the `JWT`, should be at least `16` characters
+- `ServiceBus:ConnectionString`
+- `APPINSIGHTS_INSTRUMENTATIONKEY`
 
 ## Deploy the infrastructure
 

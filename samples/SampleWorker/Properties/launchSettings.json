@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "SampleWorker": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "NETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

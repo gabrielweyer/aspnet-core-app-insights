@@ -6,18 +6,18 @@ namespace SampleWorker.Extensions
 {
     public static class ConfigurationRootExtensions
     {
-        public static string GetAppInsightsIntrumentationKey(this IConfigurationRoot configuration)
+        public static string GetAppInsightsIntrumentationKey(this IConfiguration configuration)
         {
             return configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
         }
 
-        public static LogEventLevel GetLoggingLevel(this IConfigurationRoot configuration)
+        public static LogEventLevel GetLoggingLevel(this IConfiguration configuration)
         {
             return configuration.GetLoggingLevel("MinimumLevel:Default");
         }
 
         private static LogEventLevel GetLoggingLevel(
-            this IConfigurationRoot configuration,
+            this IConfiguration configuration,
             string keyName,
             LogEventLevel defaultLevel = LogEventLevel.Warning)
         {

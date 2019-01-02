@@ -36,12 +36,10 @@ namespace SampleWorker.Extensions
             return services;
         }
 
-        public static IServiceCollection AddOptions(this IServiceCollection services, IConfigurationRoot configuration)
+        public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IConfiguration>(configuration);
+            services.AddSingleton(configuration);
             services.AddOptions();
-
-            var options = configuration.GetSection("AzureWebJob").Get<AzureWebJobOptions>();
 
             services.Configure<AzureWebJobOptions>(configuration.GetSection("AzureWebJob"));
 

@@ -1,9 +1,10 @@
 ﻿using System.IO;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Microsoft.ServiceBus.Messaging;
 using Newtonsoft.Json;
 using SampleCore.Events;
 using Serilog.Context;
@@ -19,14 +20,14 @@ namespace SampleWorker.Handlers
             _logger = logger;
         }
 
-        public async Task HandleEventThreeAsync([ServiceBusTrigger("sync", "event-three", AccessRights.Listen)] BrokeredMessage message, CancellationToken token)
+        public async Task HandleEventThreeAsync([ServiceBusTrigger("sync", "event-three")] Message message, CancellationToken token)
         {
             using (LogContext.PushProperty("CorrelationId", message.CorrelationId))
             {
-                EventThree eventThree = null;
+                EventThree eventThree;
 
-                using (var stream = message.GetBody<Stream>())
-                using (var reader = new StreamReader(stream))
+                using (var stream = new MemoryStream(message.Body))
+                using (var reader = new StreamReader(stream, Encoding.UTF8))
                 {
                     eventThree = JsonConvert.DeserializeObject<EventThree>(reader.ReadToEnd());
                 }
