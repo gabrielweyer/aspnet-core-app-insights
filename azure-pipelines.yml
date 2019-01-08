@@ -12,6 +12,9 @@ trigger:
     - README.md
     - docs/
 
+variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+
 steps:
 
 - task: DotNetCoreInstaller@0
