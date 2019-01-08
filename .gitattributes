@@ -1,3 +1,5 @@
 tools/packages.config eol=lf
 
+docs/postman/*.json eol=lf
+
 *.ps1 linguist-vendored

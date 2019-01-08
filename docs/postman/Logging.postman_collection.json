@@ -1,0 +1,173 @@
+{
+	"info": {
+		"_postman_id": "2e67d00a-2835-4f55-88ce-d2735104f9c7",
+		"name": "Logging",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"_postman_id": "fc3a07e1-ce86-4a3d-a793-7fa3983e5734",
+			"name": "Log",
+			"item": [
+				{
+					"_postman_id": "3df53946-51c2-428d-82b3-d16c1872a899",
+					"name": "Trace",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{BaseAddress}}log/trace",
+							"host": [
+								"{{BaseAddress}}log"
+							],
+							"path": [
+								"trace"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "cd7be0b8-bcb9-491b-b7de-f62ac81bfa6e",
+					"name": "Debug",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{BaseAddress}}log/debug",
+							"host": [
+								"{{BaseAddress}}log"
+							],
+							"path": [
+								"debug"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "a50b6c73-869c-4bce-b32c-a6ffc9aecc81",
+					"name": "Information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{BaseAddress}}log/information",
+							"host": [
+								"{{BaseAddress}}log"
+							],
+							"path": [
+								"information"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "0b98a58d-047e-4deb-b8a9-466d928b1bba",
+					"name": "Warning",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{BaseAddress}}log/warning",
+							"host": [
+								"{{BaseAddress}}log"
+							],
+							"path": [
+								"warning"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "f3596874-a92d-4d18-b2d9-44439da5c701",
+					"name": "Error",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{BaseAddress}}log/error",
+							"host": [
+								"{{BaseAddress}}log"
+							],
+							"path": [
+								"error"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "252d8ae4-60ec-40fc-9840-f8932f831ccd",
+					"name": "Critical",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{BaseAddress}}log/critical",
+							"host": [
+								"{{BaseAddress}}log"
+							],
+							"path": [
+								"critical"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"_postman_id": "c0051b3e-a818-46a7-a6ea-1fd1e46b94e0",
+					"name": "Throw",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{BaseAddress}}log/throw",
+							"host": [
+								"{{BaseAddress}}log"
+							],
+							"path": [
+								"throw"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"_postman_id": "30085825-237b-4036-aa75-190d0e9480ee",
+			"name": "Downstream",
+			"item": [
+				{
+					"_postman_id": "ddb289f0-eb55-4912-8e8f-4678a2155ad0",
+					"name": "Duck",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "{{BaseAddress}}downstream/duck",
+							"host": [
+								"{{BaseAddress}}downstream"
+							],
+							"path": [
+								"duck"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

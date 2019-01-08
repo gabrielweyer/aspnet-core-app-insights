@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <UserSecretsId>1675fe1d-a21e-4a52-8d7c-dba3ff561bbe</UserSecretsId>
+    <UserSecretsId>b645d8b3-b7a2-436e-85af-6d8de9e23bfa</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.4.0" />
