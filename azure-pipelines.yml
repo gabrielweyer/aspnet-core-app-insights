@@ -27,7 +27,7 @@ steps:
     export PATH="$PATH:$HOME/.dotnet/tools"
     dotnet cake build.cake --bootstrap
     dotnet cake build.cake --publish
-    displayName: 'Build'
+  displayName: 'Build'
 
 - task: ArchiveFiles@1
   displayName: 'Archive web artifacts'
