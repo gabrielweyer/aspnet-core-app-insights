@@ -1,0 +1,49 @@
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+trigger:
+  branches:
+    include:
+    - master
+  paths:
+    exclude:
+    - .editorconfig
+    - LICENSE
+    - README.md
+    - docs/
+
+steps:
+
+- task: DotNetCoreInstaller@0
+  displayName: 'Use .NET Core SDK 2.2.102'
+  inputs:
+    version: 2.2.102
+
+- bash: |
+    dotnet tool install --global Cake.Tool --version 0.31.0
+    displayName: 'Install "Cake.Tool" .NET Core global tool'
+
+- bash: |
+    export PATH="$PATH:$HOME/.dotnet/tools"
+    dotnet cake build.cake --bootstrap
+    dotnet cake build.cake --publish
+    displayName: 'Build'
+
+- task: ArchiveFiles@1
+  displayName: 'Archive web artifacts'
+  inputs:
+    rootFolder: artifacts/publish/
+    includeRootFolder: false
+    archiveFile: '$(Build.ArtifactStagingDirectory)/publish.zip'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: web'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/publish.zip'
+    ArtifactName: web
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: web-arm'
+  inputs:
+    PathtoPublish: template/template.json
+    ArtifactName: 'web-arm'

@@ -10,8 +10,6 @@ obj/
 
 # Cake
 
-tools/*
-!tools/packages.config
 artifacts/
 
 # Visual Studio
