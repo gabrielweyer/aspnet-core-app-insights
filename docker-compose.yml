@@ -1,0 +1,17 @@
+version: '3'
+services:
+  upstream:
+    build: samples/Docker.Web
+    ports:
+     - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApplicationInsights:InstrumentationKey
+      - ApplicationInsights:TelemetryChannel:StorageFolder=/tmp/app-logs
+      - DownstreamService:BaseAddress=http://downtream/
+  downtream:
+    build: samples/Docker.Downstream
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApplicationInsights:InstrumentationKey
+      - ApplicationInsights:TelemetryChannel:StorageFolder=/tmp/app-logs
