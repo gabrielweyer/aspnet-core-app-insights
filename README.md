@@ -10,6 +10,10 @@ I wanted to demonstrate the power of [structured logging][structured-logging] an
 - [A demo running locally](#locally)
 - [Results in Application Insights portal](#results-in-application-insights-portal)
 
+## CI / CD
+
+[![Build Status](https://dev.azure.com/gabrielweyer/AspNetCoreAppInsights/_apis/build/status/AspNetCoreAppInsights?branchName=master)](https://dev.azure.com/gabrielweyer/AspNetCoreAppInsights/_build/latest?definitionId=13?branchName=master)
+
 ## Prerequisites
 
 - [Create an Application Insights resource][create-application-insights]
