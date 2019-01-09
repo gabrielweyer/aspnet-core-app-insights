@@ -2,6 +2,8 @@
 
 I wanted to demonstrate the power of [structured logging][structured-logging] and illustrate some of the goodness of [Application Insights][application-insights] (such as [correlation across services][correlation] and [application map][application-map]).
 
+To see what I'll be working on next, head to the [Trello board][trello-board].
+
 ## Contents
 
 - [Application Insights configuration](#application-insights-configuration)
@@ -228,3 +230,4 @@ Log events emitted by `Serilog` are recorded as `Traces` by `Application Insight
 [configuration-via-configuration-settings]: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/6e602f85b1d39d9e779f001297def36b1e935899/src/Microsoft.ApplicationInsights.AspNetCore/Extensions/ApplicationInsightsExtensions.cs#L314
 [configuration-via-code]: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/6e602f85b1d39d9e779f001297def36b1e935899/src/Microsoft.ApplicationInsights.AspNetCore/Extensions/ApplicationInsightsExtensions.cs#L91
 [configuration-via-code-default]: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/6e602f85b1d39d9e779f001297def36b1e935899/src/Microsoft.ApplicationInsights.AspNetCore/Extensions/DefaultApplicationInsightsServiceConfigureOptions.cs#L30
+[trello-board]: https://trello.com/b/vxYLfAEL/app-insights-best-practices

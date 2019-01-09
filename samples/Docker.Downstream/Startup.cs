@@ -22,7 +22,7 @@ namespace Docker.Downstream
         {
             _logger.LogDebug("Configuring services");
 
-            services.AddConfigurableApplicationInsightsTelemetry(_logger, _configuration);
+            services.AddConfigurableApplicationInsightsTelemetry(_logger, _configuration, "LocalUpstream");
 
             services
                 .AddMvc()

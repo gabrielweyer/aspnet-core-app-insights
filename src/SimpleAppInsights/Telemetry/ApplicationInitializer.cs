@@ -6,18 +6,18 @@ namespace SimpleAppInsights.Telemetry
 {
     public class ApplicationInitializer : ITelemetryInitializer
     {
-        private readonly Application _application;
+        private readonly ApplicationDescriptor _applicationDescriptor;
 
-        public ApplicationInitializer(Application application)
+        public ApplicationInitializer(ApplicationDescriptor applicationDescriptor)
         {
-            _application = application;
+            _applicationDescriptor = applicationDescriptor;
         }
 
         public void Initialize(ITelemetry telemetry)
         {
-            telemetry.Context.Component.Version = _application.Build;
-            telemetry.Context.Properties["Application Name"] = _application.Name;
-            telemetry.Context.Properties["Host"] = _application.Host;
+            telemetry.Context.Cloud.RoleName = _applicationDescriptor.Name;
+            telemetry.Context.Cloud.RoleInstance = _applicationDescriptor.Instance;
+            telemetry.Context.Component.Version = _applicationDescriptor.Version;
         }
     }
 }

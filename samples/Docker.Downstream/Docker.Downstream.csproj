@@ -14,4 +14,9 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\SimpleAppInsights\SimpleAppInsights.csproj" />
+    <ProjectReference Include="..\..\src\SimpleInstrumentation\SimpleInstrumentation.csproj" />
+  </ItemGroup>
+
 </Project>

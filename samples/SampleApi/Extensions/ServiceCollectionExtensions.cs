@@ -66,7 +66,7 @@ namespace SampleApi.Extensions
 
         public static IServiceCollection AddTelemetry(this IServiceCollection services, string applicationName)
         {
-            services.AddSingleton(new Application(applicationName, Application.GetAssemblyInformationalversion(typeof(Startup))));
+            services.AddSingleton(new ApplicationDescriptor(applicationName, ApplicationDescriptor.GetAssemblyInformationalVersion(typeof(Startup))));
             services.AddSingleton<ITelemetryInitializer, AuthenticatedUserInitializer>();
             services.AddSingleton<ITelemetryInitializer, ApplicationInitializer>();
 

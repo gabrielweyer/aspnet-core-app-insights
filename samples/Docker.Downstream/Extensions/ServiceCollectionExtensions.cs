@@ -1,11 +1,12 @@
 using System.Runtime.InteropServices;
-using Docker.Downstream.Telemetry;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleAppInsights.Telemetry;
+using SimpleInstrumentation.Models;
 
 namespace Docker.Downstream.Extensions
 {
@@ -14,18 +15,21 @@ namespace Docker.Downstream.Extensions
         public static void AddConfigurableApplicationInsightsTelemetry(
             this IServiceCollection services,
             ILogger logger,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            string applicationName)
         {
             services.ConfigureTelemetryChannelStorageFolder(logger, configuration);
 
+            var applicationVersion = configuration["ApplicationInsights:ApplicationVersion"];
+
+            if (string.IsNullOrWhiteSpace(applicationVersion))
+            {
+                applicationVersion = ApplicationDescriptor.GetAssemblyInformationalVersion(typeof(Startup));
+            }
+
             services.AddApplicationInsightsTelemetry(options =>
             {
-                var applicationVersion = configuration["ApplicationInsights:ApplicationVersion"];
-
-                if (!string.IsNullOrWhiteSpace(applicationVersion))
-                {
-                    options.ApplicationVersion = applicationVersion;
-                }
+                options.ApplicationVersion = applicationVersion;
 
                 var enableAdaptiveSamplingFromConfig = configuration["ApplicationInsights:EnableAdaptiveSampling"];
 
@@ -49,7 +53,8 @@ namespace Docker.Downstream.Extensions
                 }
             });
 
-            TelemetryConfiguration.Active.TelemetryInitializers.Add(new ServiceNameInitializer());
+            var applicationDescriptor = new ApplicationDescriptor(applicationName, applicationVersion);
+            TelemetryConfiguration.Active.TelemetryInitializers.Add(new ApplicationInitializer(applicationDescriptor));
         }
 
         private static void ConfigureTelemetryChannelStorageFolder(this IServiceCollection services, ILogger logger,

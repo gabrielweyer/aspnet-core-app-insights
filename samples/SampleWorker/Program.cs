@@ -82,7 +82,8 @@ namespace SampleWorker
                 {
                     services
                         .AddOptions(context.Configuration)
-                        .AddEventHandlers();
+                        .AddEventHandlers()
+                        .AddTelemetry("AppServiceWebJob");
 
                     var webJobBuilder = services.AddWebJobs(o => { });
                     webJobBuilder.AddServiceBus(options =>

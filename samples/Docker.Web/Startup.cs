@@ -24,7 +24,7 @@ namespace Docker.Web
             _logger.LogDebug("Configuring services");
 
             services
-                .AddConfigurableApplicationInsightsTelemetry(_logger, _configuration)
+                .AddConfigurableApplicationInsightsTelemetry(_logger, _configuration, "LocalUpstream")
                 .AddHttpClient("downstream",
                     client => client.BaseAddress = new Uri(_configuration["DownstreamService:BaseAddress"]));
 

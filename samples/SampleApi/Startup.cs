@@ -23,7 +23,7 @@ namespace SampleApi
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddTelemetry("Web")
+                .AddTelemetry("AppServiceWebApp")
                 .AddInstrumentation()
                 .AddAuthentication(_configuration)
                 .AddLogic()

@@ -21,7 +21,7 @@ namespace SampleApi.Extensions
                 // Based on: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/0edd28dad8529546ce337629f05f0d7383a5f489/src/Microsoft.ApplicationInsights.AspNetCore/Extensions/ApplicationInsightsServiceOptions.cs#L14-L21
                 services.Configure<ApplicationInsightsServiceOptions>(o =>
                 {
-                    o.ApplicationVersion = Application.GetAssemblyInformationalversion(typeof(Startup));
+                    o.ApplicationVersion = ApplicationDescriptor.GetAssemblyInformationalVersion(typeof(Startup));
                     o.DeveloperMode = true;
                     o.EnableAdaptiveSampling = false;
                     o.InstrumentationKey = instrumentationKey;

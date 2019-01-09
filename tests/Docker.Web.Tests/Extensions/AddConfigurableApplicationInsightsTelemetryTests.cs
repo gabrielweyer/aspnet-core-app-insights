@@ -94,7 +94,7 @@ namespace Docker.Web.Tests.Extensions
 
             public void ConfigureServices(IServiceCollection services)
             {
-                services.AddConfigurableApplicationInsightsTelemetry(_logger, _configuration);
+                services.AddConfigurableApplicationInsightsTelemetry(_logger, _configuration, "test");
             }
 
             public void Configure(IApplicationBuilder app)

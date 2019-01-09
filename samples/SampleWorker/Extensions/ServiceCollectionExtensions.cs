@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SampleWorker.Handlers;
 using SampleWorker.Options;
+using SimpleAppInsights.Telemetry;
+using SimpleInstrumentation.Models;
 
 namespace SampleWorker.Extensions
 {
@@ -51,6 +53,14 @@ namespace SampleWorker.Extensions
             services.AddScoped<EventOneHandler>();
             services.AddScoped<EventTwoHandler>();
             services.AddScoped<EventThreeHandler>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddTelemetry(this IServiceCollection services, string applicationName)
+        {
+            services.AddSingleton(new ApplicationDescriptor(applicationName, ApplicationDescriptor.GetAssemblyInformationalVersion(typeof(Program))));
+            services.AddSingleton<ITelemetryInitializer, ApplicationInitializer>();
 
             return services;
         }
