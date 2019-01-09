@@ -10,7 +10,7 @@ namespace SimpleInstrumentation.Models
         {
             Name = name;
             Version = version;
-            Instance = Dns.GetHostName();
+            Instance = Environment.MachineName;
         }
 
         public string Name { get; }
