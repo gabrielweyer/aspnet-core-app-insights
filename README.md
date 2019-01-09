@@ -178,7 +178,17 @@ I created a `Postman` [collection](docs/postman) to get you started.
 
 ### Application name, version and instance
 
+### Application in local
 
+![Application Initialiser local](docs/assets/app-initialiser-local.png)
+
+### Application in Docker
+
+![Application Initialiser Docker](docs/assets/app-initialiser-docker.png)
+
+### Application in Azure
+
+![Application Initialiser Azure](docs/assets/app-initialiser-azure.png)
 
 ### Request middleware
 
