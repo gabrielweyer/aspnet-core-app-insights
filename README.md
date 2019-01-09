@@ -176,6 +176,10 @@ I created a `Postman` [collection](docs/postman) to get you started.
 
 ## Results in Application Insights portal
 
+### Application name, version and instance
+
+
+
 ### Request middleware
 
 Notice how request properties such as the `RequestMethod` and `StatusCode` are recorded as `Custom Data`. This gives us the ability to query them in the `Application Insights` and `Log Analytics` portals.

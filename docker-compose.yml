@@ -1,7 +1,9 @@
-version: '3'
+version: '3.7'
 services:
   upstream:
-    build: samples/Docker.Web
+    build:
+      context: ./
+      dockerfile: ./samples/Docker.Web/Dockerfile
     ports:
      - "8080:80"
     environment:
@@ -10,7 +12,9 @@ services:
       - ApplicationInsights:TelemetryChannel:StorageFolder=/tmp/app-logs
       - DownstreamService:BaseAddress=http://downtream/
   downtream:
-    build: samples/Docker.Downstream
+    build:
+      context: ./
+      dockerfile: ./samples/Docker.Downstream/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ApplicationInsights:InstrumentationKey
