@@ -2,12 +2,17 @@ pool:
   vmImage: 'Ubuntu-16.04'
 
 trigger:
+  branches:
+    include:
+    - master
   paths:
     exclude:
     - .editorconfig
     - LICENSE
     - README.md
     - docs/
+
+pr: none
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
