@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleAspNetCoreAppInsights.Extensions;
 
 namespace Docker.Downstream
 {
@@ -22,7 +23,7 @@ namespace Docker.Downstream
         {
             _logger.LogDebug("Configuring services");
 
-            services.AddConfigurableApplicationInsightsTelemetry(_logger, _configuration, "LocalUpstream");
+            services.AddConfigurableAspNetCoreApplicationInsights(_logger, _configuration, "LocalUpstream", typeof(Startup));
 
             services
                 .AddMvc()

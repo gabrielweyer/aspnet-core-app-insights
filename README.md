@@ -12,20 +12,36 @@ To see what I'll be working on next, head to the [Trello board][trello-board].
 - [A demo running locally](#locally)
 - [Results in Application Insights portal](#results-in-application-insights-portal)
 
-## CI / CD
+## CI / CD for the Azure App Service demo
 
 [![Build Status](https://dev.azure.com/gabrielweyer/AspNetCoreAppInsights/_apis/build/status/AspNetCoreAppInsights?branchName=master)](https://dev.azure.com/gabrielweyer/AspNetCoreAppInsights/_build/latest?definitionId=13?branchName=master)
 
 ## Prerequisites
 
-- [Create an Application Insights resource][create-application-insights]
-- [Install .NET Core SDK 2.2.100][dotnet-core-sdk]
+- [Create an Application Insights resource][create-application-insights] (for the local demo)
+- [Install .NET Core SDK 2.2.102][dotnet-core-sdk]
 - [Install Docker][docker] (optional)
 
 ## Guiding principles
 
-- Logging should be wired up as early as possible to capture startup issues
+- Logging should be wired up as early as possible to capture startup issues ([Serilog.AspNetCore instructions][serilog-aspnetcore-instruction])
 - Use `Microsoft.Extensions.Logging.ILogger<T>` instead of `Serilog.ILogger`
+
+I wrote a detailed [logging guide][logging-guide].
+
+## Serilog / Application Insights integration
+
+I'm using the [Serilog.Sinks.ApplicationInsights][application-insights-sink] sink.
+
+I recommend sending log event to `Application Insights` as `TraceTelemetry` rather than `EventTelemetry`
+
+[Trace documentation][application-insights-trace]:
+
+> Use TrackTrace to help diagnose problems by sending a "breadcrumb trail" to Application Insights. You can send chunks of diagnostic data and inspect them in Diagnostic Search. In .NET Log adapters use this API to send third-party logs to the portal. In Java for Standard loggers like Log4J, Logback use Application Insights Log4j or Logback Appenders to send third-party logs to the portal.
+
+[Event documentation][application-insights-event]:
+
+> A custom event is a data point that you can display in Metrics Explorer as an aggregated count, and in Diagnostic Search as individual occurrences. (It isn't related to MVC or other framework "events.") Insert TrackEvent calls in your code to count various events. How often users choose a particular feature, how often they achieve particular goals, or maybe how often they make particular types of mistakes.
 
 ## Local configuration
 
@@ -41,11 +57,13 @@ dotnet user-secrets --id b645d8b3-b7a2-436e-85af-6d8de9e23bfa set <secret-name> 
 
 The `Application Insights` instrumentation key should be stored as a secret. When running locally you can leverage the `Secret Manager`.
 
-**Beware**: the `Application Insights` instrumentation key cannot be rotated.
+:rotating_light: the `Application Insights` instrumentation key cannot be rotated.
 
 ## Application Insights configuration
 
-**Note**: this is based on the `NuGet` package [Microsoft.ApplicationInsights.AspNetCore][ai-nuget] `2.3.0`.
+**Note**: this is based on the `NuGet` package [Microsoft.ApplicationInsights.AspNetCore][ai-nuget] `2.5.1`. The [documentation][application-insights-console-application] for `Console` application is sparse and the integration is more limited than for `ASP.NET Core`.
+
+### Application Insights configuration for ASP.NET Core
 
 Some settings can be set via [ASP.NET Core configuration][aspnet-core-configuration] and code while others can only be set via code. If _known_ configuration keys are set they will take precedence over the _"normal"_ configuration keys. This section explains the convoluted default behaviour of `Application insights` while the next [section](#a-better-way-to-configure-application-insights) details what I think is a better approach.
 
@@ -62,14 +80,14 @@ Some settings can be set via [ASP.NET Core configuration][aspnet-core-configurat
 | `EndpointAddress` | `APPINSIGHTS_ENDPOINTADDRESS` | `ApplicationInsights:TelemetryChannel:EndpointAddress` |
 | `InstrumentationKey` | `APPINSIGHTS_INSTRUMENTATIONKEY` | `ApplicationInsights:InstrumentationKey` |
 
-### Most relevant settings
+#### Most relevant settings
 
 - `ApplicationVersion` will appear as `Application Version` in the Application Insights portal
   - Defaults to the value of the [entry assembly][entry-assembly]'s [VersionAttribute][version-attribute]  which has some fairly restrictive [rules][version-attribute-rules]
   - Even more relevant if you leverage [canary releases][canary-release] as you'll have two different versions of your application serving production traffic at the same time
 - `DeveloperMode` will send data immediately, one telemetry item at a time. This reduces the amount of time between the moment when your application tracks telemetry and when it appears on the `Application Insights` portal
   - If a debugger is attached on process startup, the `SDK` will ignore the configuration keys related to `DeveloperMode` and turn it on
-- `EnableAdaptiveSampling` affects the volume of telemetry sent from your web server app to the `Application Insights` service endpoint. The volume is adjusted automatically to keep within a specified maximum rate of traffic ([documentation][adaptive-sampling])
+- `EnableAdaptiveSampling` affects the volume of telemetry sent from your web server app to the `Application Insights` service endpoint. The volume is adjusted automatically to keep within a specified maximum rate of traffic ([documentation][adaptive-sampling]). :rotating_light: adaptive sampling is only available for `ASP.NET Core` where it is **turned on by default**
 - `InstrumentationKey` self-explanatory
 
 ### A better way to configure Application Insights
@@ -79,7 +97,9 @@ The [most relevant settings](#most-relevant-settings) require to be configured v
 - When using the configuration ([SDK source][configuration-via-configuration]), only some settings can be set; Namely: `ApplicationVersion`, `DeveloperMode`, `EndpointAddress` and `InstrumentationKey` ([SDK source][configuration-via-configuration-settings]). The notable absent here is `EnableAdaptiveSampling`.
 - When using the code ([SDK source][configuration-via-code]), the `SDK` will instantiate its own `IConfiguration` ([SDK source][configuration-via-code-default]) using three providers: `appsettings.json`, `appsettings.{EnvironmentName}.json` and `environment variables`. If you're leveraging any other providers such as the `Secret Manager`, `Key Vault` or the `command line` they will be ignored. This will impact `InstrumentationKey` as it should be stored as a secret.
 
-I wrote an [extension method](samples/Docker.Web/Extensions/ServiceCollectionExtensions.cs) that leverages both code and configuration and allows you to set the most relevant settings via configuration.
+I decided to ignore the _known_ configuration keys altogether. I assume they were added to support legacy hosting scenario on `Azure`. I also focused on providing a uniform `API` between `ASP.NET` and `Console` applications
+
+I wrote an extension method ([ASP.NET](src/SimpleAspNetCoreAppInsights/Extensions/ServiceCollectionExtensions.cs) and [Console](src/SimpleAppInsights/Extensions/ServiceCollectionExtensions.cs)) that leverages both code and configuration and allows you to set the most relevant settings via configuration.
 
 ### Running on a non-Windows platform
 
@@ -113,7 +133,7 @@ You'll need to configure the following secrets when running locally:
 
 - `Jwt:SecretKey` - used to sign the `JWT`, should be at least `16` characters
 - `ServiceBus:ConnectionString`
-- `APPINSIGHTS_INSTRUMENTATIONKEY`
+- `ApplicationInsights:InstrumentationKey`
 
 ### Deploy the infrastructure
 
@@ -245,3 +265,9 @@ Log events emitted by `Serilog` are recorded as `Traces` by `Application Insight
 [configuration-via-code]: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/6e602f85b1d39d9e779f001297def36b1e935899/src/Microsoft.ApplicationInsights.AspNetCore/Extensions/ApplicationInsightsExtensions.cs#L91
 [configuration-via-code-default]: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/6e602f85b1d39d9e779f001297def36b1e935899/src/Microsoft.ApplicationInsights.AspNetCore/Extensions/DefaultApplicationInsightsServiceConfigureOptions.cs#L30
 [trello-board]: https://trello.com/b/vxYLfAEL/app-insights-best-practices
+[logging-guide]: https://github.com/gabrielweyer/nuggets/blob/master/docs/logging/README.md
+[serilog-aspnetcore-instruction]: https://github.com/serilog/serilog-aspnetcore#instructions
+[application-insights-sink]: https://www.nuget.org/packages/Serilog.Sinks.ApplicationInsights/
+[application-insights-trace]: https://docs.microsoft.com/en-us/azure/azure-monitor/app/api-custom-events-metrics#tracktrace
+[application-insights-event]: https://docs.microsoft.com/en-us/azure/azure-monitor/app/api-custom-events-metrics#trackevent
+[application-insights-console-application]: https://docs.microsoft.com/en-us/azure/azure-monitor/app/console

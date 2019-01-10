@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using SampleApi.Options;
 using SampleApi.Services;
 using SimpleAppInsights.Telemetry;
+using SimpleAspNetCoreAppInsights.Extensions;
 using SimpleInstrumentation.Models;
 
 namespace SampleApi.Extensions
@@ -64,11 +65,9 @@ namespace SampleApi.Extensions
             return services;
         }
 
-        public static IServiceCollection AddTelemetry(this IServiceCollection services, string applicationName)
+        public static IServiceCollection AddTelemetry(this IServiceCollection services)
         {
-            services.AddSingleton(new ApplicationDescriptor(applicationName, ApplicationDescriptor.GetAssemblyInformationalVersion(typeof(Startup))));
             services.AddSingleton<ITelemetryInitializer, AuthenticatedUserInitializer>();
-            services.AddSingleton<ITelemetryInitializer, ApplicationInitializer>();
 
             return services;
         }

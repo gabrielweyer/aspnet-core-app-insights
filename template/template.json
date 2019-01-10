@@ -73,7 +73,7 @@
             "displayName": "appsettings"
           },
           "properties": {
-            "APPINSIGHTS_INSTRUMENTATIONKEY": "[reference(resourceId('microsoft.insights/components/', parameters('siteName')), '2015-05-01').InstrumentationKey]",
+            "ApplicationInsights:InstrumentationKey": "[reference(resourceId('microsoft.insights/components/', parameters('siteName')), '2015-05-01').InstrumentationKey]",
             "ServiceBus:ConnectionString": "[concat('Endpoint=', variables('serviceBusEndpoint'), ';SharedAccessKeyName=', variables('senderRuleName'), ';SharedAccessKey=', listKeys(resourceId('Microsoft.ServiceBus/namespaces/topics/authorizationRules', parameters('siteName'), variables('syncEventThreeTopicName'), variables('SenderRuleName')), variables('serviceBusApiVersion')).primaryKey)]",
             "ServiceBus:Topic": "[variables('syncEventThreeTopicName')]"
           }

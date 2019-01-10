@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SampleWorker.Extensions;
 using Serilog;
+using SimpleAppInsights.Extensions;
 
 namespace SampleWorker
 {
@@ -25,6 +26,8 @@ namespace SampleWorker
         {
             var environment = Environment.GetEnvironmentVariable("NETCORE_ENVIRONMENT");
             var isDevelopment = IsDevelopment(environment);
+
+            var loggerFactory = new LoggerFactory();
 
             var builder = new HostBuilder()
                 .UseEnvironment(environment)
@@ -50,18 +53,12 @@ namespace SampleWorker
                         .Enrich.WithDemystifiedStackTraces()
                         .Enrich.FromLogContext();
 
-                    var appInsightsIntrumentationKey = configuration.GetAppInsightsIntrumentationKey();
+                    var appInsightsInstrumentationKey = configuration.GetApplicationInsightsInstrumentationKey();
 
-                    if (!string.IsNullOrEmpty(appInsightsIntrumentationKey))
+                    if (!string.IsNullOrEmpty(appInsightsInstrumentationKey))
                     {
-                        loggingBuilder.Services.UseDeveloperApplicationInsights(appInsightsIntrumentationKey);
-
                         loggerConfiguration = loggerConfiguration
-                            .WriteTo.ApplicationInsightsTraces(appInsightsIntrumentationKey, serilogLevel);
-                    }
-                    else
-                    {
-                        DisableApplicationInsights();
+                            .WriteTo.ApplicationInsightsTraces(appInsightsInstrumentationKey, serilogLevel);
                     }
 
                     if (isDevelopment)
@@ -72,18 +69,32 @@ namespace SampleWorker
                     }
 
                     var logger = loggerConfiguration.CreateLogger();
+                    Log.Logger = logger;
 
-                    var loggerFactory = new LoggerFactory();
                     loggerFactory.AddSerilog(logger);
 
                     loggingBuilder.Services.AddLogging(loggerFactory);
                 })
                 .ConfigureServices((context, services) =>
                 {
+                    var appInsightsInstrumentationKey = context.Configuration.GetApplicationInsightsInstrumentationKey();
+
+                    if (!string.IsNullOrEmpty(appInsightsInstrumentationKey))
+                    {
+                        services.AddConfigurableApplicationInsights(
+                            loggerFactory.CreateLogger<Program>(),
+                            context.Configuration,
+                            "AppServiceWebJob",
+                            typeof(Program));
+                    }
+                    else
+                    {
+                        DisableApplicationInsights();
+                    }
+
                     services
                         .AddOptions(context.Configuration)
-                        .AddEventHandlers()
-                        .AddTelemetry("AppServiceWebJob");
+                        .AddEventHandlers();
 
                     var webJobBuilder = services.AddWebJobs(o => { });
                     webJobBuilder.AddServiceBus(options =>
@@ -101,34 +112,6 @@ namespace SampleWorker
                 await host.RunAsync();
             }
         }
-
-//        private static JobHostConfiguration GetJobHostConfiguration(IServiceProvider services)
-//        {
-//            var configuration = new JobHostConfiguration();
-//
-//            configuration.Queues.MaxPollingInterval = TimeSpan.FromSeconds(10);
-//            configuration.Queues.BatchSize = 1;
-//            configuration.Queues.MaxDequeueCount = 10;
-//            configuration.Queues.VisibilityTimeout = TimeSpan.FromSeconds(30);
-//            configuration.JobActivator = new ContainerJobActivator(services);
-//            configuration.LoggerFactory = services.GetService<ILoggerFactory>();
-//
-//            var webJobOptions = services.GetService<IOptions<AzureWebJobOptions>>().Value;
-//
-//            configuration.DashboardConnectionString = webJobOptions.DashboardConnectionString;
-//            configuration.StorageConnectionString = webJobOptions.StorageConnectionString;
-//
-//            configuration.Tracing.ConsoleLevel = TraceLevel.Off;
-//
-//            var serviceBusConfiguration = new ServiceBusConfiguration
-//            {
-//                ConnectionString = webJobOptions.ServiceBusConnectionString
-//            };
-//
-//            configuration.UseServiceBus(serviceBusConfiguration);
-//
-//            return configuration;
-//        }
 
         private static void DisableApplicationInsights()
         {

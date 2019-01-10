@@ -6,11 +6,6 @@ namespace SampleWorker.Extensions
 {
     public static class ConfigurationRootExtensions
     {
-        public static string GetAppInsightsIntrumentationKey(this IConfiguration configuration)
-        {
-            return configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
-        }
-
         public static LogEventLevel GetLoggingLevel(this IConfiguration configuration)
         {
             return configuration.GetLoggingLevel("MinimumLevel:Default");

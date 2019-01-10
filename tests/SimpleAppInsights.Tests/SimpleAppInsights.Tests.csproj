@@ -18,4 +18,8 @@
     <ProjectReference Include="..\..\samples\Docker.Web\Docker.Web.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AspNetCoreAppInsights" />
+  </ItemGroup>
+
 </Project>

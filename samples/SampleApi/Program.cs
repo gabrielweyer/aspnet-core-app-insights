@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using SampleApi.Extensions;
 using Serilog;
 using Serilog.Events;
+using SimpleAppInsights.Extensions;
 
 namespace SampleApi
 {
@@ -50,15 +51,15 @@ namespace SampleApi
                 .Enrich.FromLogContext()
                 .Enrich.WithDemystifiedStackTraces();
 
-            var appInsightsIntrumentationKey = configuration.GetValue<string>("APPINSIGHTS_INSTRUMENTATIONKEY");
+            var appInsightsInstrumentationKey = configuration.GetApplicationInsightsInstrumentationKey();
 
-            if (!string.IsNullOrEmpty(appInsightsIntrumentationKey))
+            if (!string.IsNullOrEmpty(appInsightsInstrumentationKey))
             {
                 loggerConfiguration = loggerConfiguration
-                    .WriteTo.ApplicationInsightsTraces(appInsightsIntrumentationKey, serilogLevel);
+                    .WriteTo.ApplicationInsightsTraces(appInsightsInstrumentationKey, serilogLevel);
 
                 webHostBuilder = webHostBuilder
-                    .UseDeveloperApplicationInsights(appInsightsIntrumentationKey);
+                    .UseDeveloperApplicationInsights(appInsightsInstrumentationKey);
             }
             else
             {

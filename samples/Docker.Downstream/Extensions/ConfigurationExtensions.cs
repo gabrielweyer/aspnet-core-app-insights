@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
+using SimpleAppInsights.Extensions;
 
 namespace Docker.Downstream.Extensions
 {
@@ -21,7 +22,7 @@ namespace Docker.Downstream.Extensions
                 loggerConfiguration.WriteTo.Console(serilogDefaultMinimumLevel);
             }
 
-            var applicationInsightsInstrumentationKey = configuration["ApplicationInsights:InstrumentationKey"];
+            var applicationInsightsInstrumentationKey = configuration.GetApplicationInsightsInstrumentationKey();
 
             if (!string.IsNullOrWhiteSpace(applicationInsightsInstrumentationKey))
             {

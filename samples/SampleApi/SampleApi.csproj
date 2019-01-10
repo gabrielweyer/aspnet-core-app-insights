@@ -4,19 +4,20 @@
     <UserSecretsId>b645d8b3-b7a2-436e-85af-6d8de9e23bfa</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.4.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.All" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="2.0.0" />
     <PackageReference Include="Serilog" Version="2.6.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.0" />
     <PackageReference Include="Serilog.Enrichers.Demystify" Version="0.1.0-dev-00011" />
-    <PackageReference Include="Serilog.Settings.Configuration" Version="2.4.0" />
-    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="2.5.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="2.6.1" />
+    <PackageReference Include="Serilog.Sinks.ApplicationInsights" Version="2.6.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.Seq" Version="4.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\SimpleAppInsights\SimpleAppInsights.csproj" />
+    <ProjectReference Include="..\..\src\SimpleAspNetCoreAppInsights\SimpleAspNetCoreAppInsights.csproj" />
     <ProjectReference Include="..\..\src\SimpleInstrumentation\SimpleInstrumentation.csproj" />
     <ProjectReference Include="..\SampleCore\SampleCore.csproj" />
   </ItemGroup>

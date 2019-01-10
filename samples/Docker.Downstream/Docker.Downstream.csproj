@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.3.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.5.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Serilog.Settings.Configuration" Version="2.6.1" />
@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\SimpleAppInsights\SimpleAppInsights.csproj" />
+    <ProjectReference Include="..\..\src\SimpleAspNetCoreAppInsights\SimpleAspNetCoreAppInsights.csproj" />
     <ProjectReference Include="..\..\src\SimpleInstrumentation\SimpleInstrumentation.csproj" />
   </ItemGroup>
 

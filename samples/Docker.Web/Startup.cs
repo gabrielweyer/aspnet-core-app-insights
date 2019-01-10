@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SimpleAspNetCoreAppInsights.Extensions;
 
 namespace Docker.Web
 {
@@ -24,7 +25,7 @@ namespace Docker.Web
             _logger.LogDebug("Configuring services");
 
             services
-                .AddConfigurableApplicationInsightsTelemetry(_logger, _configuration, "LocalUpstream")
+                .AddConfigurableAspNetCoreApplicationInsights(_logger, _configuration, "LocalUpstream", typeof(Startup))
                 .AddHttpClient("downstream",
                     client => client.BaseAddress = new Uri(_configuration["DownstreamService:BaseAddress"]));
 

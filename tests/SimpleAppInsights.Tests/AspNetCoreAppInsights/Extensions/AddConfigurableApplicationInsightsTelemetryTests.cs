@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Docker.Web.Extensions;
 using FluentAssertions;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore;
@@ -9,14 +8,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SimpleAspNetCoreAppInsights.Extensions;
 using Xunit;
 
-namespace Docker.Web.Tests.Extensions
+namespace SimpleAppInsights.Tests.AspNetCoreAppInsights.Extensions
 {
     public class AddConfigurableApplicationInsightsTelemetryTests
     {
         [Fact]
-        public void GivenCustomConfiguration_WhenUsingConfigurableAppInsights_ThenUseCustomConfiguration()
+        public void GivenCustomConfiguration_ThenUseCustomConfiguration()
         {
             // Arrange
 
@@ -55,7 +55,7 @@ namespace Docker.Web.Tests.Extensions
         }
 
         [Fact]
-        public void GivenNoCustomConfiguration_WhenUsingConfigurableAppInsights_ThenUseDefaultConfiguration()
+        public void GivenNoCustomConfiguration_ThenUseDefaultConfiguration()
         {
             // Arrange
 
@@ -77,7 +77,7 @@ namespace Docker.Web.Tests.Extensions
 
             Assert.True(actualOptions.EnableAdaptiveSampling);
             Assert.NotEqual("test-local", actualOptions.ApplicationVersion);
-            Assert.Null(actualOptions.DeveloperMode);
+            Assert.False(actualOptions.DeveloperMode);
             Assert.NotEqual("instrumentation-key", actualOptions.InstrumentationKey);
         }
 
@@ -94,7 +94,7 @@ namespace Docker.Web.Tests.Extensions
 
             public void ConfigureServices(IServiceCollection services)
             {
-                services.AddConfigurableApplicationInsightsTelemetry(_logger, _configuration, "test");
+                services.AddConfigurableAspNetCoreApplicationInsights(_logger, _configuration, "test", typeof(AddConfigurableApplicationInsightsTelemetryTests));
             }
 
             public void Configure(IApplicationBuilder app)
