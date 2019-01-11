@@ -24,10 +24,10 @@ To see what I'll be working on next, head to the [Trello board][trello-board].
 
 ## Guiding principles
 
-- Logging should be wired up as early as possible to capture startup issues ([Serilog.AspNetCore instructions][serilog-aspnetcore-instruction])
-- Use `Microsoft.Extensions.Logging.ILogger<T>` instead of `Serilog.ILogger`
+The following points are **my personal preferences** only. I wrote more about logging in this [guide][logging-guide]. Feel free to ignore these principles if they do not apply to your situation.
 
-I wrote a detailed [logging guide][logging-guide].
+- Logging should be wired up as early as possible to capture configuration issues ([Serilog.AspNetCore instructions][serilog-aspnetcore-instructions])
+- Use `Microsoft.Extensions.Logging.ILogger<T>` instead of `Serilog.ILogger`
 
 ## Serilog / Application Insights integration
 
@@ -57,7 +57,7 @@ dotnet user-secrets --id b645d8b3-b7a2-436e-85af-6d8de9e23bfa set <secret-name> 
 
 The `Application Insights` instrumentation key should be stored as a secret. When running locally you can leverage the `Secret Manager`.
 
-:rotating_light: the `Application Insights` instrumentation key cannot be rotated.
+:rotating_light: The `Application Insights` instrumentation key **cannot** be rotated.
 
 ## Application Insights configuration
 
@@ -87,7 +87,8 @@ Some settings can be set via [ASP.NET Core configuration][aspnet-core-configurat
   - Even more relevant if you leverage [canary releases][canary-release] as you'll have two different versions of your application serving production traffic at the same time
 - `DeveloperMode` will send data immediately, one telemetry item at a time. This reduces the amount of time between the moment when your application tracks telemetry and when it appears on the `Application Insights` portal
   - If a debugger is attached on process startup, the `SDK` will ignore the configuration keys related to `DeveloperMode` and turn it on
-- `EnableAdaptiveSampling` affects the volume of telemetry sent from your web server app to the `Application Insights` service endpoint. The volume is adjusted automatically to keep within a specified maximum rate of traffic ([documentation][adaptive-sampling]). :rotating_light: adaptive sampling is only available for `ASP.NET Core` where it is **turned on by default**
+- `EnableAdaptiveSampling` affects the volume of telemetry sent from your web server app to the `Application Insights` service endpoint. The volume is adjusted automatically to keep within a specified maximum rate of traffic ([documentation][adaptive-sampling]).
+  - :rotating_light: Adaptive sampling is only available for `ASP.NET Core` where it is **turned on by default**
 - `InstrumentationKey` self-explanatory
 
 ### A better way to configure Application Insights
@@ -100,6 +101,14 @@ The [most relevant settings](#most-relevant-settings) require to be configured v
 I decided to ignore the _known_ configuration keys altogether. I assume they were added to support legacy hosting scenario on `Azure`. I also focused on providing a uniform `API` between `ASP.NET` and `Console` applications
 
 I wrote an extension method ([ASP.NET](src/SimpleAspNetCoreAppInsights/Extensions/ServiceCollectionExtensions.cs) and [Console](src/SimpleAppInsights/Extensions/ServiceCollectionExtensions.cs)) that leverages both code and configuration and allows you to set the most relevant settings via configuration.
+
+| Configuration Key | Note |
+| - | - |
+| `ApplicationInsights:ApplicationVersion` | Defaults to the `InformationalVersion` of the entry assembly |
+| `ApplicationInsights:InstrumentationKey` | No default value |
+| `ApplicationInsights:TelemetryChannel:DeveloperMode` | Defaults to `false` |
+| `ApplicationInsights:TelemetryChannel:StorageFolder` | [Required](#running-on-a-non-Windows-platform) on `Unix` if you want to to add resiliency to the telemetry channel. Optional on `Windows` |
+| `ApplicationInsights:EnableAdaptiveSampling` | Available in `ASP.NET Core` only, defaults to `true` :rotating_light: |
 
 ### Running on a non-Windows platform
 
@@ -123,8 +132,8 @@ I disabled the built-in request logging by setting the `Microsoft` minimum level
 
 This demonstrates the capabilities of `Application Insights` when used in an [Azure App Service][azure-app-service]. The application is composed of:
 
-- A `Web App (ASP.NET Core 2.2)` `API`
-- A `Web Job (.NET Core 2.2 console app)`
+- A `Web App (ASP.NET Core 2.2)` `API` ([SampleApi](samples/SampleApi/SampleApi.csproj) project)
+- A `Web Job (.NET Core 2.2 console app)` ([SampleWorker](samples/SampleWorker/SampleWorker.csproj) project)
 - An `Azure Service Bus` namespace with a topic and a subscription to allow the `Web App` to delegate some tasks to the `Web Job`
 
 ### Local secrets configuration
@@ -170,8 +179,8 @@ New-AzureRmResourceGroupDeployment -ResourceGroupName "<resource-group-name>" -T
 
 This demonstrates the capabilities of `Application Insights` when running locally (optionally inside `Docker`). The application is composed of:
 
-- An _upstream_ (client-facing) `ASP.NET Core 2.2` `API`
-- A _downstream_ (called by the _upstream_) `ASP.NET Core 2.2` `API`
+- An _upstream_ (client-facing) `ASP.NET Core 2.2` `API` ([Docker.Web](samples\Docker.Web\Docker.Web.csproj) project)
+- A _downstream_ (called by the _upstream_) `ASP.NET Core 2.2` `API` ([Docker.Downstream](samples\Docker.Downstream\Docker.Downstream.csproj) project)
 
 ### Secrets configuration
 
@@ -266,7 +275,7 @@ Log events emitted by `Serilog` are recorded as `Traces` by `Application Insight
 [configuration-via-code-default]: https://github.com/Microsoft/ApplicationInsights-aspnetcore/blob/6e602f85b1d39d9e779f001297def36b1e935899/src/Microsoft.ApplicationInsights.AspNetCore/Extensions/DefaultApplicationInsightsServiceConfigureOptions.cs#L30
 [trello-board]: https://trello.com/b/vxYLfAEL/app-insights-best-practices
 [logging-guide]: https://github.com/gabrielweyer/nuggets/blob/master/docs/logging/README.md
-[serilog-aspnetcore-instruction]: https://github.com/serilog/serilog-aspnetcore#instructions
+[serilog-aspnetcore-instructions]: https://github.com/serilog/serilog-aspnetcore#instructions
 [application-insights-sink]: https://www.nuget.org/packages/Serilog.Sinks.ApplicationInsights/
 [application-insights-trace]: https://docs.microsoft.com/en-us/azure/azure-monitor/app/api-custom-events-metrics#tracktrace
 [application-insights-event]: https://docs.microsoft.com/en-us/azure/azure-monitor/app/api-custom-events-metrics#trackevent
