@@ -175,6 +175,12 @@ Test-AzureRmResourceGroupDeployment -ResourceGroupName "<resource-group-name>" -
 New-AzureRmResourceGroupDeployment -ResourceGroupName "<resource-group-name>" -TemplateFile .\template.json -TemplateParameterFile .\parameters.json
 ```
 
+### Postman collection
+
+I created a `Postman` [collection](docs/postman/azure) to get you started.
+
+You will have to overide `BaseAddress` with the `URI` of your `Azure App Service`.
+
 ## Locally
 
 This demonstrates the capabilities of `Application Insights` when running locally (optionally inside `Docker`). The application is composed of:
@@ -201,7 +207,7 @@ docker-compose down
 
 ### Postman collection
 
-I created a `Postman` [collection](docs/postman) to get you started.
+I created a `Postman` [collection](docs/postman/local) to get you started.
 
 ## Results in Application Insights portal
 

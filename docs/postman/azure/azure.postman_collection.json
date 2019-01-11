@@ -1,0 +1,210 @@
+{
+	"info": {
+		"_postman_id": "682a36e3-465f-4a12-b687-f144106a4745",
+		"name": "Azure",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Log DEBUG",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Correlation-Id",
+						"value": "5"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BaseAddress}}do/debug",
+					"host": [
+						"{{BaseAddress}}do"
+					],
+					"path": [
+						"debug"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log VERBOSE",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BaseAddress}}do/verbose",
+					"host": [
+						"{{BaseAddress}}do"
+					],
+					"path": [
+						"verbose"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1b1767f7-83a8-4b53-85dc-d75d32067032",
+						"type": "text/javascript",
+						"exec": [
+							"var responseBody = pm.response.json();",
+							"pm.environment.set(\"Token\", responseBody.token);"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BaseAddress}}do/get-token/{{UserId}}",
+					"host": [
+						"{{BaseAddress}}do"
+					],
+					"path": [
+						"get-token",
+						"{{UserId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log INFORMATION",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BaseAddress}}do/information",
+					"host": [
+						"{{BaseAddress}}do"
+					],
+					"path": [
+						"information"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Throw Exception",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BaseAddress}}do/throw",
+					"host": [
+						"{{BaseAddress}}do"
+					],
+					"path": [
+						"throw"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Web Job 3",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BaseAddress}}do/web-job-three",
+					"host": [
+						"{{BaseAddress}}do"
+					],
+					"path": [
+						"web-job-three"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Log WARNING",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{BaseAddress}}do/warning",
+					"host": [
+						"{{BaseAddress}}do"
+					],
+					"path": [
+						"warning"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{Token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "06e1e5b4-8409-4627-a1bb-cd26c320fdf9",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "df9ef015-a4b6-42ed-8673-8d804e8a1ba4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
